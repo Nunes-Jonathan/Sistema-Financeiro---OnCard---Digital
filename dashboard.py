@@ -98,10 +98,27 @@ if upload_file:
             total_pago = despesas[despesas['Status'] == "Pago"]['Valor'].sum()
             total_pendente = despesas[despesas['Status'] == "Pendente"]['Valor'].sum()
 
+            lancamentos_filtrados = lancamentos_filtrados.copy()  # Garantir uma cópia independente para evitar o warning
+            lancamentos_filtrados['Valor_Total'] = pd.to_numeric(lancamentos_filtrados['Valor_Total'], errors='coerce')
+            total_lancamentos_filtrados = lancamentos_filtrados['Valor_Total'].sum()
+
+            # Calcular 20% do total de lançamentos filtrados
+            percentual_20_filtrado = total_lancamentos_filtrados * 0.2
+
             # Exibir os valores em cards
-            col1, col2 = st.columns(2)
+            col1, col2, col3 = st.columns(3)
 
             with col1:
+                st.markdown(
+                    f"""
+                    <div class="card">
+                        <h4>20% do Total de Lançamentos (R$)</h4>
+                        <h2>{percentual_20_filtrado:,.2f}</h2>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+            with col2:
                 st.markdown(
                     f"""
                     <div class="card">
@@ -111,7 +128,7 @@ if upload_file:
                     """,
                     unsafe_allow_html=True,
                 )
-            with col2:
+            with col3:
                 st.markdown(
                     f"""
                     <div class="card">
